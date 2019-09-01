@@ -1,10 +1,28 @@
-export const getMenuMarkup = function () {
-  return `
-        <nav class="main-navigation">
-    <a href="#all" class="main-navigation__item main-navigation__item--active">All movies</a>
-    <a href="#watchlist" class="main-navigation__item">Watchlist <span class="main-navigation__item-count">13</span></a>
-    <a href="#history" class="main-navigation__item">History <span class="main-navigation__item-count">4</span></a>
-    <a href="#favorites" class="main-navigation__item">Favorites <span class="main-navigation__item-count">8</span></a>
-    <a href="#stats" class="main-navigation__item main-navigation__item--additional">Stats</a>
-  </nav>`;
-};
+import resultArray from './../data.js';
+
+const titleFilter = [`All movies`, `Watchlist`, `History`, `Favorites`, `Stats`];
+const films = resultArray;
+
+export const getMenuMarkup = ({title, setCount}) =>
+  `<nav class="main-navigation">
+    <a href="#all" class="main-navigation__item main-navigation__item--active">${title[0]}</a>
+    <a href="#watchlist" class="main-navigation__item">${title[1]}<span class="main-navigation__item-count">${setCount(`watchlist`)}</span></a>
+    <a href="#history" class="main-navigation__item">${title[2]}<span class="main-navigation__item-count">${setCount(`history`)}</span></a>
+    <a href="#favorites" class="main-navigation__item">${title[3]}<span class="main-navigation__item-count">${setCount(`favorites`)}</span></a>
+    <a href="#stats" class="main-navigation__item main-navigation__item--additional">${title[4]}</a>
+  </nav>`.trim();
+
+export const getFilter = () =>({
+  title: titleFilter,
+  setCount(value) {
+    let count = 0;
+
+    switch (value) {
+      case `watchlist`:
+        films.forEach((task) => task[value] ? count++ : null);
+        getFilter.count = count;
+        return count;
+    }
+    return count;
+  }
+});

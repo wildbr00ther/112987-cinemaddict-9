@@ -1,1 +1,1 @@
-export const getStatisticMarkup = () => `<p> movies inside</p>`.trim();
+export const getStatisticMarkup = (count) => `<p>${count} movies inside</p>`.trim();

@@ -34,11 +34,32 @@ export const getFilmCard = () => ({
     `./images/posters/the-great-flamarion.jpg`,
     `./images/posters/the-man-with-the-golden-arm.jpg`,
   ][Math.floor(Math.random() * 7)],
+  rating: (Math.random() * 10).toFixed(1),
+  year: new Date().getFullYear() - Math.floor(Math.random() * 50),
+  duration: Math.floor(Math.random() * 2) + ` h ` + Math.floor(Math.random() * 60) + ` m`,
+  genre: Array.from(new Set([
+    `Horror`,
+    `Musical`,
+    `Comedy`,
+    `Romcom`,
+    `Thriller`,
+    `Cartoon`,
+    `Sci-fi`,
+    `Adventure`,
+  ])),
   description: descriptionText
     .split(`.`)
     .sort(() => Math.random() - 0.5)
     .slice(0, 4)
     .join(`. `),
+  comments: [
+    `Cool`,
+    `Booooooooooring`,
+    `Very very old. Meh`,
+    `Almost two hours? Seriously?`,
+    `Nice try`,
+    `Fantastic`,
+  ],
   inWatchlist: Boolean(Math.round(Math.random())),
   inWatched: Boolean(Math.round(Math.random())),
   inFavorites: Boolean(Math.round(Math.random())),

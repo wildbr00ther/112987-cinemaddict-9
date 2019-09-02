@@ -19,8 +19,21 @@ export const getFilter = () =>({
 
     switch (value) {
       case `watchlist`:
-        films.forEach((task) => task[value] ? count++ : null);
+        films.forEach((film) => film.inWatchlist ? count++ : null);
         getFilter.count = count;
+
+        return count;
+
+      case `history`:
+        films.forEach((film) => film.inWatched ? count++ : null);
+        getFilter.count = count;
+
+        return count;
+
+      case `favorites`:
+        films.forEach((film) => film.inFavorites ? count++ : null);
+        getFilter.count = count;
+
         return count;
     }
     return count;

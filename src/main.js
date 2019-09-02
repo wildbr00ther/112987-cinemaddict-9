@@ -30,8 +30,9 @@ const renderComponent = (container, markup, position, repeat = 1, callback = () 
 const renderFilms = (container, count) => {
   count = count <= filmsForLoad.length ? count : filmsForLoad.length;
   for (let i = 0; i < count; i++) {
-    let {title, poster, description} = filmsForLoad[i];
-    container.insertAdjacentHTML(`beforeend`, getFilmMarkup({title, poster, description}));
+    let {title, poster, rating, year, duration, genre, description, comments, inWatchlist, inWatched, inFavorites} = filmsForLoad[i];
+    container.insertAdjacentHTML(`beforeend`,
+        getFilmMarkup({title, poster, rating, year, duration, genre, description, comments, inWatchlist, inWatched, inFavorites}));
   }
   filmsForLoad = filmsForLoad.slice(count);
 };
@@ -78,6 +79,7 @@ const loadMoreButton = document.querySelector(`.films-list__show-more`);
 
 const loadMoreButtonHandler = () => {
   renderFilms(filmsListContainer, FILM_COUNT);
+  setPopUpListener();
   if (filmsForLoad.length === 0) {
     loadMoreButton.removeEventListener(`click`, loadMoreButtonHandler);
     loadMoreButton.remove();
@@ -94,18 +96,26 @@ const filmsListExtraArray = filmsContainer.querySelectorAll(`.films-list--extra`
 
 for (let i = 0; i < filmsListExtraArray.length; i++) {
   const extraListContainer = filmsListExtraArray[i].querySelector(`.films-list__container`);
-  // for (let j = 0; j < 5; j++) {
-  //   renderComponent(extraListContainer, getFilmMarkup(), `beforeend`);
-  // }
   renderFilms(extraListContainer, 2);
 }
 
 const statisticContainer = document.querySelector(`.footer__statistics`);
-renderComponent(statisticContainer, getStatisticMarkup(), `beforeend`);
+renderComponent(statisticContainer, getStatisticMarkup(films.length), `beforeend`);
 
-// Показываем попап
-renderComponent(document.body, getFilmDetailsMarkup(), `beforeend`);
+// PopUp
+const renderPopUp = () => {
+  renderComponent(document.body, getFilmDetailsMarkup(), `beforeend`);
 
-// Скрываем попап
-const closePopupBtn = document.querySelector(`.film-details__close-btn`);
-closePopupBtn.addEventListener(`click`, () => (document.querySelector(`.film-details`).style.display = `none`));
+  const closePopupBtn = document.querySelector(`.film-details__close-btn`);
+  closePopupBtn.addEventListener(`click`, () => (document.querySelector(`.film-details`).remove()));
+};
+
+const setPopUpListener = () => {
+  const filmPopUpSelectors = document.querySelectorAll(`.film-card__title, .film-card__poster, .film-card__comments`);
+
+  Array.from(filmPopUpSelectors).forEach((selector) => {
+    selector.addEventListener(`click`, renderPopUp);
+  });
+};
+setPopUpListener();
+

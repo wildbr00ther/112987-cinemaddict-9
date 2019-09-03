@@ -11,6 +11,7 @@ import {getFilmDetailsMarkup} from './components/film-details.js';
 import {getShowMoreMarkup} from './components/show-more-btn.js';
 import resultArray from './data.js';
 import {getStatisticMarkup} from './components/statistic.js';
+import {getRandomItem} from './utilities';
 
 // Main и Header
 const siteMainContainer = document.querySelector(`.main`);
@@ -31,6 +32,7 @@ const renderFilms = (container, count) => {
   count = count <= filmsForLoad.length ? count : filmsForLoad.length;
   for (let i = 0; i < count; i++) {
     let {title, poster, rating, year, duration, genre, description, comments, inWatchlist, inWatched, inFavorites} = filmsForLoad[i];
+
     container.insertAdjacentHTML(`beforeend`,
         getFilmMarkup({title, poster, rating, year, duration, genre, description, comments, inWatchlist, inWatched, inFavorites}));
   }
@@ -104,8 +106,8 @@ renderComponent(statisticContainer, getStatisticMarkup(films.length), `beforeend
 
 // PopUp
 const renderPopUp = () => {
-  renderComponent(document.body, getFilmDetailsMarkup(), `beforeend`);
-
+  let {title, originalTitle, poster, director, screenwriters, actors, rating, year, releaseDate, country, duration, genre, description, ageLimit, comments, inWatchlist, inWatched, inFavorites} = films[1];
+  renderComponent(document.body, getFilmDetailsMarkup({title, originalTitle, poster, director, screenwriters, actors, rating, year, releaseDate, country, duration, genre, description, ageLimit, comments, inWatchlist, inWatched, inFavorites}), `beforeend`);
   const closePopupBtn = document.querySelector(`.film-details__close-btn`);
   closePopupBtn.addEventListener(`click`, () => (document.querySelector(`.film-details`).remove()));
 };

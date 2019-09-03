@@ -11,7 +11,6 @@ import {getFilmDetailsMarkup} from './components/film-details.js';
 import {getShowMoreMarkup} from './components/show-more-btn.js';
 import resultArray from './data.js';
 import {getStatisticMarkup} from './components/statistic.js';
-import {getRandomItem} from './utilities';
 
 // Main и Header
 const siteMainContainer = document.querySelector(`.main`);

@@ -78,14 +78,14 @@ const actors = new Set([
 ]);
 
 const countries = [
-    `Russia`,
-    `USA`,
-    `India`,
-    `Englan`,
-    `Ukrain`,
-    `Turkey`,
-    `France`,
-    `Spain`,
+  `Russia`,
+  `USA`,
+  `India`,
+  `Englan`,
+  `Ukrain`,
+  `Turkey`,
+  `France`,
+  `Spain`,
 ];
 
 const genres = new Set([
@@ -148,8 +148,8 @@ export const getFilmCard = () => ({
   originalTitle: getRandomItem(titles),
   poster: getRandomItem(posters),
   director: getRandomItem(directors),
-  screenwriters: screenwriters,
-  actors: actors,
+  screenwriters,
+  actors,
   rating: (Math.random() * 10).toFixed(1),
   year: new Date().getFullYear() - Math.floor(Math.random() * 50),
   releaseDate: Date.now(),

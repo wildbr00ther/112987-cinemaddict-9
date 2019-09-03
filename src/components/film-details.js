@@ -16,7 +16,7 @@ const getCommenmarkup = ({author, date, comment, emoji}) => {
       `.trim();
 };
 
-export const getFilmDetailsMarkup = function ({title, originalTitle, poster, director, screenwriters, actors, rating, year, releaseDate, country, duration, genre, description, ageLimit, comments, inWatchlist, inWatched, inFavorites}) {
+export const getFilmDetailsMarkup = function ({title, originalTitle, poster, director, screenwriters, actors, rating, releaseDate, country, duration, genre, description, ageLimit, comments}) {
   return `
        <section class="film-details">
   <form class="film-details__inner" action="" method="get">

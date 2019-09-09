@@ -9,8 +9,9 @@ import {MostCommented} from './components/films-most-commented.js';
 import {Film} from './components/film.js';
 import {FilmDetails} from './components/film-details.js';
 import {ButtonLoad} from './components/show-more-btn.js';
-import {mockArray, getFilmCard} from './data.js';
 import {Statistic} from './components/statistic.js';
+import {NoFilms} from './components/no-films';
+import {mockArray, getFilmCard} from './data.js';
 import {Position, render, unrender} from './utils';
 
 // Main и Header
@@ -55,6 +56,16 @@ const renderFilm = (container, filmMock) => {
     .querySelector(`.film-details__close-btn`)
     .addEventListener(`click`, hideFilmDetails);
 
+  filmDetails.getElement().querySelector(`textarea`)
+    .addEventListener(`focus`, () => {
+      document.removeEventListener(`keydown`, onEscKeyDown);
+    });
+
+  filmDetails.getElement().querySelector(`textarea`)
+    .addEventListener(`blur`, () => {
+      document.addEventListener(`keydown`, onEscKeyDown);
+    });
+
   render(container, film.getElement(), Position.BEFOREEND);
 };
 const renderFilms = (container, films, count) => {
@@ -87,56 +98,46 @@ const filmsContainer = siteMainContainer.querySelector(`.films`);
 const filmsMarkup = new FilmsList();
 render(filmsContainer, filmsMarkup.getElement(), Position.BEFOREEND);
 
-const topRated = new TopRated();
-render(filmsContainer, topRated.getElement(), Position.BEFOREEND);
-
-const mostCommented = new MostCommented();
-render(filmsContainer, mostCommented.getElement(), Position.BEFOREEND);
-
-// Показать еще
 const filmsList = filmsContainer.querySelector(`.films-list`);
-const buttonLoad = new ButtonLoad();
-render(filmsList, buttonLoad.getElement(), Position.BEFOREEND);
+if (mockArray.length === 0) {
+  const noTask = new NoFilms();
+  filmsContainer.replaceChild(noTask.getElement(), filmsList);
+} else {
 
-const buttonLoadHandler = () => {
-  renderFilms(filmsListContainer, filmsForLoad, FILM_COUNT);
+  const topRated = new TopRated();
+  render(filmsContainer, topRated.getElement(), Position.BEFOREEND);
 
-  if (filmsForLoad.length === 0) {
-    unrender(buttonLoad.getElement());
-    buttonLoad.set();
+  const mostCommented = new MostCommented();
+  render(filmsContainer, mostCommented.getElement(), Position.BEFOREEND);
+
+  // Показать еще
+  const buttonLoad = new ButtonLoad();
+  render(filmsList, buttonLoad.getElement(), Position.BEFOREEND);
+
+  const buttonLoadHandler = () => {
+    renderFilms(filmsListContainer, filmsForLoad, FILM_COUNT);
+
+    if (filmsForLoad.length === 0) {
+      unrender(buttonLoad.getElement());
+      buttonLoad.set();
+    }
+  };
+  buttonLoad.getElement().addEventListener(`click`, buttonLoadHandler);
+
+  // films-list__container
+  const filmsListContainer = filmsContainer.querySelector(`.films-list__container`);
+  renderFilms(filmsListContainer, filmsMocks, FILM_COUNT);
+
+  // films-list-extra
+  const filmsListExtraArray = filmsContainer.querySelectorAll(`.films-list--extra`);
+  for (let i = 0; i < filmsListExtraArray.length; i++) {
+    const extraListContainer = filmsListExtraArray[i].querySelector(`.films-list__container`);
+    renderFilms(extraListContainer, filmsMocks, FILM_EXTRA_COUNT);
   }
-};
-buttonLoad.getElement().addEventListener(`click`, buttonLoadHandler);
 
-// films-list__container
-const filmsListContainer = filmsContainer.querySelector(`.films-list__container`);
-renderFilms(filmsListContainer, filmsMocks, FILM_COUNT);
-
-// films-list-extra
-const filmsListExtraArray = filmsContainer.querySelectorAll(`.films-list--extra`);
-for (let i = 0; i < filmsListExtraArray.length; i++) {
-  const extraListContainer = filmsListExtraArray[i].querySelector(`.films-list__container`);
-  renderFilms(extraListContainer, filmsMocks, FILM_EXTRA_COUNT);
+  const statisticContainer = document.querySelector(`.footer__statistics`);
+  const statistic = new Statistic(mockArray.length);
+  render(statisticContainer, statistic.getElement(), Position.BEFOREEND);
 }
 
-const statisticContainer = document.querySelector(`.footer__statistics`);
-const statistic = new Statistic(mockArray.length);
-render(statisticContainer, statistic.getElement(), Position.BEFOREEND);
-
-// PopUp
-// const renderPopUp = () => {
-//   let {title, originalTitle, poster, director, screenwriters, actors, rating, year, releaseDate, country, duration, genre, description, ageLimit, comments, inWatchlist, inWatched, inFavorites} = films[1];
-//   renderComponent(document.body, getFilmDetailsMarkup({title, originalTitle, poster, director, screenwriters, actors, rating, year, releaseDate, country, duration, genre, description, ageLimit, comments, inWatchlist, inWatched, inFavorites}), `beforeend`);
-//   const closePopupBtn = document.querySelector(`.film-details__close-btn`);
-//   closePopupBtn.addEventListener(`click`, () => (document.querySelector(`.film-details`).remove()));
-// };
-
-// const setPopUpListener = () => {
-//   const filmPopUpSelectors = document.querySelectorAll(`.film-card__title, .film-card__poster, .film-card__comments`);
-//
-//   Array.from(filmPopUpSelectors).forEach((selector) => {
-//     selector.addEventListener(`click`, renderPopUp);
-//   });
-// };
-// setPopUpListener();
 

@@ -1,4 +1,4 @@
-import {getRandomBoolean, getRandomItem} from './utilities';
+import {getRandomBoolean, getRandomItem} from './utils';
 
 const descriptionText = `Lorem ipsum dolor sit amet, consectetur adipiscing elit.` +
   ` Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra.` +
@@ -142,6 +142,7 @@ const releaseDate = () => {
 
   return day + ` ` + month + ` ` + year;
 };
+
 const getComment = () => ({
   emoji: getRandomItem(emojis),
   date: [Math.floor(Math.random() * 4)],
@@ -176,13 +177,11 @@ export const getFilmCard = () => ({
 });
 
 
-const resultArray = [];
+export const mockArray = [];
 const addObjToArr = () => {
   for (let i = 0; i < 22; i++) {
-    resultArray.push(getFilmCard());
+    mockArray.push(getFilmCard());
   }
 };
 
 addObjToArr();
-
-export default resultArray;

@@ -32,6 +32,7 @@ export default class PageController {
     this._mostCommented = new MostCommented();
     this._buttonLoad = new ButtonLoad();
     this._statistic = new Statistic();
+    this._filmsListContainer = null;
   }
 
   _renderFilms(container, films, count) {
@@ -85,6 +86,27 @@ export default class PageController {
     render(container, film.getElement(), Position.BEFOREEND);
   }
 
+  _onSortLinkClick(evt) {
+    evt.preventDefault();
+    if (evt.target.tagName !== `A`) {
+      return;
+    }
+    this._filmsListContainer.innerHTML = ``;
+    switch (evt.target.dataset.sortType) {
+      case `date`:
+        const sortedByDate = this._films.slice().sort((a, b) => a.releaseDate - b.releaseDate);
+        sortedByDate.forEach((filmMock) => this._renderFilm(this._filmsListContainer, filmMock));
+        break;
+      case `rating`:
+        const sortedByRating = this._films.slice().sort((a, b) => b.rating - a.rating);
+        sortedByRating.forEach((filmMock) => this._renderFilm(this._filmsListContainer, filmMock));
+        break;
+      case `default`:
+        this._films.forEach((filmMock) => this._renderFilm(this._filmsListContainer, filmMock));
+        break;
+    }
+  }
+
   init() {
     // Добавляем основные блоки
     render(this._headerContainer, this._search.getElement(), Position.BEFOREEND);
@@ -94,6 +116,8 @@ export default class PageController {
     render(this._mainContainer, this._board.getElement(), Position.BEFOREEND);
     render(this._board.getElement(), this._filmList.getElement(), Position.BEFOREEND);
 
+    this._filmsListContainer = this._board.getElement().querySelector(`.films-list__container`);
+
     if (mockArray.length === 0) {
       this._board.getElement().replaceChild(this._noFilms.getElement(), this._filmList.getElement());
     } else {
@@ -102,7 +126,7 @@ export default class PageController {
       render(this._filmList.getElement(), this._buttonLoad.getElement(), Position.BEFOREEND);
 
       const buttonLoadHandler = () => {
-        this._renderFilms(filmsListContainer, this._filmsForLoad, FILM_COUNT);
+        this._renderFilms(this._filmsListContainer, this._filmsForLoad, FILM_COUNT);
 
         if (this._filmsForLoad.length === 0) {
           unrender(this._buttonLoad.getElement());
@@ -111,8 +135,7 @@ export default class PageController {
       };
       this._buttonLoad.getElement().addEventListener(`click`, buttonLoadHandler);
 
-      const filmsListContainer = this._board.getElement().querySelector(`.films-list__container`);
-      this._renderFilms(filmsListContainer, this._films, FILM_COUNT);
+      this._renderFilms(this._filmsListContainer, this._films, FILM_COUNT);
 
       const filmsListExtraArray = this._board.getElement().querySelectorAll(`.films-list--extra`);
       for (let i = 0; i < filmsListExtraArray.length; i++) {
@@ -123,5 +146,8 @@ export default class PageController {
       const statisticContainer = document.querySelector(`.footer__statistics`);
       render(statisticContainer, this._statistic.getElement(), Position.BEFOREEND);
     }
+
+    this._sort.getElement()
+      .addEventListener(`click`, (evt) => this._onSortLinkClick(evt));
   }
 }

@@ -1,20 +1,13 @@
-import {createElement} from '../utils';
 import {mockArray} from './../data.js';
+import {AbstractComponent} from './absctract-component';
 
 const films = mockArray;
 
-export class Filters {
+export class Filters extends AbstractComponent {
   constructor() {
+    super();
     this._title = [`All movies`, `Watchlist`, `History`, `Favorites`, `Stats`];
     this._count = null;
-    this._element = null;
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate().trim());
-    }
-    return this._element;
   }
 
   setCount(value) {
@@ -43,8 +36,7 @@ export class Filters {
   }
 
   getTemplate() {
-    return `
-    <nav class="main-navigation">
+    return `<nav class="main-navigation">
       <a href="#all" class="main-navigation__item main-navigation__item--active">${this._title[0]}</a>
       <a href="#watchlist" class="main-navigation__item">${this._title[1]}<span class="main-navigation__item-count">${this.setCount(`watchlist`)}</span></a>
       <a href="#history" class="main-navigation__item">${this._title[2]}<span class="main-navigation__item-count">${this.setCount(`history`)}</span></a>

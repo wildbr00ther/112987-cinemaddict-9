@@ -1,17 +1,6 @@
-import {createElement} from '../utils';
+import {AbstractComponent} from './absctract-component';
 
-export class ButtonLoad {
-  constructor() {
-    this._element = null;
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate().trim());
-    }
-    return this._element;
-  }
-
+export class ButtonLoad extends AbstractComponent {
   getTemplate() {
     return `<button class="films-list__show-more">Show more</button>`;
   }

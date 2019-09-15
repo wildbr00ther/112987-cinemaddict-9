@@ -1,15 +1,9 @@
-import {createElement} from '../utils';
+import {AbstractComponent} from './absctract-component';
 
-export class Statistic {
+export class Statistic extends AbstractComponent {
   constructor(count) {
+    super();
     this._count = count;
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate().trim());
-    }
-    return this._element;
   }
 
   getTemplate() {

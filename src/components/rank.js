@@ -1,17 +1,10 @@
 import {mockArray} from '../data.js';
-import {createElement} from '../utils';
+import {AbstractComponent} from './absctract-component';
 
-export class Rank {
+export class Rank extends AbstractComponent {
   constructor() {
-    this._element = null;
+    super();
     this._watchedCount = this.calcWatched();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate().trim());
-    }
-    return this._element;
   }
 
   setRank(value) {
@@ -35,8 +28,7 @@ export class Rank {
   }
 
   getTemplate() {
-    return `
-    <section class="header__profile profile">
+    return `<section class="header__profile profile">
       <p class="profile__rating">${this.setRank(this._watchedCount)}</p>
       <img class="profile__avatar" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
     </section>`;

@@ -1,4 +1,4 @@
-import {createElement} from '../utils';
+import {AbstractComponent} from './absctract-component';
 
 const getCommenmarkup = ({author, date, comment, emoji}) => {
   return `
@@ -18,9 +18,9 @@ const getCommenmarkup = ({author, date, comment, emoji}) => {
       `;
 };
 
-export class FilmDetails {
+export class FilmDetails extends AbstractComponent {
   constructor({title, originalTitle, poster, director, screenwriters, actors, rating, releaseDate, country, duration, genre, description, ageLimit, comments}) {
-    this._element = null;
+    super();
     this._title = title;
     this._originalTitle = originalTitle;
     this._poster = poster;
@@ -37,17 +37,8 @@ export class FilmDetails {
     this._comments = comments;
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate().trim());
-    }
-
-    return this._element;
-  }
-
   getTemplate() {
-    return `
-    <section class="film-details">
+    return `<section class="film-details">
         <form class="film-details__inner" action="" method="get">
   <div class="form-details__top-container">
     <div class="film-details__close">

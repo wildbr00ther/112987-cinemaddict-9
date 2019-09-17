@@ -19,7 +19,7 @@ const getCommenmarkup = ({author, date, comment, emoji}) => {
 };
 
 export class FilmDetails extends AbstractComponent {
-  constructor({title, originalTitle, poster, director, screenwriters, actors, rating, releaseDate, country, duration, genre, description, ageLimit, comments}) {
+  constructor({title, originalTitle, poster, director, screenwriters, actors, rating, releaseDate, country, duration, genre, description, ageLimit, inWatchlist, inWatched, inFavorites, comments}) {
     super();
     this._title = title;
     this._originalTitle = originalTitle;
@@ -34,6 +34,9 @@ export class FilmDetails extends AbstractComponent {
     this._genre = genre;
     this._description = description;
     this._ageLimit = ageLimit;
+    this._inWatchlist = inWatchlist;
+    this._inWatched = inWatched;
+    this._inFavorites = inFavorites;
     this._comments = comments;
   }
 
@@ -111,13 +114,13 @@ export class FilmDetails extends AbstractComponent {
     </div>
 
     <section class="film-details__controls">
-      <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist">
+      <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist" ${this._inWatchlist ? `checked` : ``}>
       <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist ">Add to watchlist</label>
 
-      <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched">
+      <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched" ${this._inWatched ? `checked` : ``}>
       <label for="watched" class="film-details__control-label film-details__control-label--watched">Already watched</label>
 
-      <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite">
+      <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite" ${this._inFavorites ? `checked` : ``}>
       <label for="favorite" class="film-details__control-label film-details__control-label--favorite">Add to favorites</label>
     </section>
   </div>

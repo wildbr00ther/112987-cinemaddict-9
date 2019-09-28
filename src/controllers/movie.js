@@ -1,6 +1,7 @@
 import {Position, render, unrender} from '../utils';
 import {FilmDetails} from '../components/film-details';
 import {Film} from '../components/film';
+import Rating from '../components/rating';
 
 export default class MovieController {
   constructor(container, data, onDataChange, onChangeView) {
@@ -8,9 +9,9 @@ export default class MovieController {
     this._onDataChange = onDataChange;
     this._onChangeView = onChangeView;
     this._data = data;
+    this._rating = new Rating(data);
     this._filmCard = new Film(data);
     this._filmDetails = new FilmDetails(data);
-
     this.init();
   }
 
@@ -34,19 +35,36 @@ export default class MovieController {
       inWatchlist: this._data.inWatchlist,
       inWatched: this._data.inWatched,
       inFavorites: this._data.inFavorites,
+      ratingViewer: this._data.ratingViewer
     };
   }
 
   init() {
+    let containerRating = null;
+    let emoji = null;
+    let emojiContainer = null;
+
     // const film = new Film(this._data);
     // const filmDetails = new FilmDetails(this._data);
     const entry = this._entry();
-    const filmPopUpSelectors = document.querySelectorAll(`.film-card__title, .film-card__poster, .film-card__comments`);
+    const filmPopUpSelectors = this._filmCard.getElement().querySelectorAll(`.film-card__title, .film-card__poster, .film-card__comments`);
+
+    const getContainer = () => {
+      const formContainer = this._filmDetails.getElement().querySelector(`.film-details__inner`);
+      const containerTop = this._filmDetails.getElement().querySelector(`.form-details__bottom-container`);
+      containerRating = document.createElement(`div`);
+      containerRating.classList.add(`form-details__middle-container`);
+      formContainer.insertBefore(containerRating, containerTop);
+      return containerRating;
+    };
 
     const showFilmDetails = () => {
       this._onChangeView();
       render(document.body, this._filmDetails.getElement(), Position.BEFOREEND);
       this._filmCard.removeElement();
+      if (this._data.inWatched) {
+        render(getContainer(), this._rating.getElement(), Position.BEFOREEND);
+      }
       document.addEventListener(`keydown`, onEscKeyDown);
 
       this._filmDetails.getElement()
@@ -90,7 +108,7 @@ export default class MovieController {
       .addEventListener(`click`, (evt) => {
         evt.preventDefault();
         evt.stopPropagation();
-        entry.watchlist = !this._data.inWatchlist;
+        entry.inWatchlist = !this._data.inWatchlist;
         this._onDataChange(entry, this._data);
         document.removeEventListener(`keydown`, onEscKeyDown);
       });
@@ -100,7 +118,7 @@ export default class MovieController {
       .addEventListener(`click`, (evt) => {
         evt.preventDefault();
         evt.stopPropagation();
-        entry.watched = !this._data.inWatched;
+        entry.inWatched = !this._data.inWatched;
         this._onDataChange(entry, this._data);
         document.removeEventListener(`keydown`, onEscKeyDown);
       });
@@ -110,7 +128,7 @@ export default class MovieController {
       .addEventListener(`click`, (evt) => {
         evt.preventDefault();
         evt.stopPropagation();
-        entry.favorite = !this._data.inFavorites;
+        entry.inFavorites = !this._data.inFavorites;
         this._onDataChange(entry, this._data);
         document.removeEventListener(`keydown`, onEscKeyDown);
       });
@@ -118,28 +136,46 @@ export default class MovieController {
     this._filmDetails.getElement()
       .querySelector(`.film-details__control-label--watchlist`)
       .addEventListener(`click`, () => {
-        entry.watchlist = !this._data.inWatchlist;
-        document.addEventListener(`keydown`, onEscKeyDown);
-      });
-
-    this._filmDetails.getElement()
-      .querySelector(`.film-details__control-label--watched`)
-      .addEventListener(`click`, () => {
-        entry.watched = !this._data.inWatched;
-        if (document.querySelector(`.film-details__user-rating-wrap`)) {
-          // unrender(containerRating);
-          // entry.ratingViewer = null;
-        } else {
-          // render(getContainer(), this._rating.getElement());
-        }
+        entry.inWatchlist = !this._data.inWatchlist;
         document.addEventListener(`keydown`, onEscKeyDown);
       });
 
     this._filmDetails.getElement()
       .querySelector(`.film-details__control-label--favorite`)
       .addEventListener(`click`, () => {
-        entry.favorite = !this._data.inFavorites;
+        entry.inFavorites = !this._data.inFavorites;
         document.addEventListener(`keydown`, onEscKeyDown);
+      });
+
+    this._filmDetails.getElement()
+      .querySelector(`.film-details__control-label--watched`)
+      .addEventListener(`click`, () => {
+        entry.inWatched = !this._data.inWatched;
+        if (document.querySelector(`.film-details__user-rating-wrap`)) {
+          unrender(containerRating);
+          entry.ratingViewer = null;
+        } else {
+          render(getContainer(), this._rating.getElement(), Position.BEFOREEND);
+        }
+        document.addEventListener(`keydown`, onEscKeyDown);
+      });
+
+    this._rating.getElement()
+      .querySelector(`.film-details__user-rating-score`)
+      .addEventListener(`change`, () => {
+        const radio = Array.from(this._rating.getElement().querySelectorAll(`.film-details__user-rating-input`));
+        entry.ratingViewer = Number(radio.length && radio.find((r) => r.checked).value);
+      });
+
+    this._filmDetails.getElement()
+      .querySelector(`.film-details__emoji-list`)
+      .addEventListener(`click`, (event) => {
+        emoji = event.target.closest(`img`).cloneNode();
+        emoji.width = 60;
+        emoji.height = 60;
+        emojiContainer = this._filmDetails.getElement().querySelector(`.film-details__add-emoji-label`);
+        emojiContainer.innerHTML = ``;
+        emojiContainer.append(emoji);
       });
 
     render(this._container, this._filmCard.getElement(), Position.BEFOREEND);

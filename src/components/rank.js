@@ -1,5 +1,5 @@
 import {mockArray} from '../data.js';
-import {AbstractComponent} from './absctract-component';
+import {AbstractComponent} from './abstract-component';
 
 export class Rank extends AbstractComponent {
   constructor() {

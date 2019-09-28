@@ -174,14 +174,17 @@ export const getFilmCard = () => ({
   inWatchlist: getRandomBoolean(),
   inWatched: getRandomBoolean(),
   inFavorites: getRandomBoolean(),
+  ratingViewer: (Math.random() * 10).toFixed(1),
 });
 
 
-export const mockArray = [];
-const addObjToArr = () => {
-  for (let i = 0; i < 22; i++) {
-    mockArray.push(getFilmCard());
-  }
-};
+// export const mockArray = [];
+// const addObjToArr = () => {
+//   for (let i = 0; i < 22; i++) {
+//     mockArray.push(getFilmCard());
+//   }
+// };
+//
+// addObjToArr();
 
-addObjToArr();
+export const mockArray = Array.from({length: 22}, getFilmCard);

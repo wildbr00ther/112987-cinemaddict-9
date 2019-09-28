@@ -1,4 +1,4 @@
-import {AbstractComponent} from './absctract-component';
+import {AbstractComponent} from './abstract-component';
 
 export class Film extends AbstractComponent {
   constructor({title, poster, rating, year, duration, genre, description, comments, inWatchlist, inWatched, inFavorites}) {

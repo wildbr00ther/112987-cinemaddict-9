@@ -1,4 +1,4 @@
-import {AbstractComponent} from './absctract-component';
+import {AbstractComponent} from './abstract-component';
 
 const getCommenmarkup = ({author, date, comment, emoji}) => {
   return `

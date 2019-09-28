@@ -1,4 +1,5 @@
 import {AbstractComponent} from './abstract-component';
+import moment from 'moment';
 
 const getCommenmarkup = ({author, date, comment, emoji}) => {
   return `
@@ -10,7 +11,7 @@ const getCommenmarkup = ({author, date, comment, emoji}) => {
             <p class="film-details__comment-text">${comment}</p>
             <p class="film-details__comment-info">
               <span class="film-details__comment-author">${author}</span>
-              <span class="film-details__comment-day">${date} days ago</span>
+              <span class="film-details__comment-day">${moment(date).startOf(`day`).fromNow()}</span>
               <button class="film-details__comment-delete">Delete</button>
             </p>
           </div>
@@ -87,7 +88,7 @@ export class FilmDetails extends AbstractComponent {
           </tr>
           <tr class="film-details__row">
             <td class="film-details__term">Release Date</td>
-            <td class="film-details__cell">${this._releaseDate}</td>
+            <td class="film-details__cell">${moment(this._releaseDate).format(`D MMM YYYY`)}</td>
           </tr>
           <tr class="film-details__row">
             <td class="film-details__term">Runtime</td>

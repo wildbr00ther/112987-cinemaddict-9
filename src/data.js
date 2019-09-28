@@ -1,4 +1,5 @@
 import {getRandomBoolean, getRandomItem} from './utils';
+import moment from 'moment';
 
 const descriptionText = `Lorem ipsum dolor sit amet, consectetur adipiscing elit.` +
   ` Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra.` +
@@ -131,18 +132,6 @@ const users = [
   `Child`,
 ];
 
-const releaseDate = () => {
-  const customDate = new Date(Date.UTC(
-      2019 - Math.floor(Math.random() * 50),
-      12 - Math.floor(Math.random() * 11),
-      30 - Math.floor(Math.random() * 28)));
-  const day = customDate.getDay();
-  const month = customDate.toLocaleString(`eng`, {month: `long`});
-  const year = customDate.getFullYear();
-
-  return day + ` ` + month + ` ` + year;
-};
-
 const getComment = () => ({
   emoji: getRandomItem(emojis),
   date: [Math.floor(Math.random() * 4)],
@@ -164,7 +153,7 @@ export const getFilmCard = () => ({
   actors,
   rating: (Math.random() * 10).toFixed(1),
   year: new Date().getFullYear() - Math.floor(Math.random() * 50),
-  releaseDate: releaseDate(),
+  releaseDate: moment([(2019 - Math.floor(Math.random() * 50)), (12 - Math.floor(Math.random() * 11)), (30 - Math.floor(Math.random() * 28))]),
   country: getRandomItem(countries),
   duration: Math.floor(Math.random() * 2) + ` h ` + Math.floor(Math.random() * 60) + ` m`,
   genre: genres,

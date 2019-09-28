@@ -1,5 +1,5 @@
 import PageController from './controllers/page.js';
-import {getFilmCard} from './data.js';
+import {mockArray} from './data.js';
 
 
 // Main и Header
@@ -10,10 +10,10 @@ export const FILM_EXTRA_COUNT = 2;
 // export const films = mockArray;
 // let filmsForLoad = mockArray;
 
-const filmsMocks = new Array(FILM_COUNT)
-  .fill(``)
-  .map(getFilmCard);
+// const filmsMocks = new Array(FILM_COUNT)
+//   .fill(``)
+//   .map(getFilmCard);
 
-const pageController = new PageController(mainContainer, headerContainer, filmsMocks);
+const pageController = new PageController(mainContainer, headerContainer, mockArray);
 pageController.init();
 

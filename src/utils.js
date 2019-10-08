@@ -11,6 +11,44 @@ const Position = {
   BEFOREEND: `beforeend`
 };
 
+const typeSorting = {
+  BY_DEFAULT: {
+    TYPE: `default`,
+    SORT: undefined,
+  },
+  BY_DATE: {
+    TYPE: `date`,
+    SORT: (a, b) => b.year - a.year,
+  },
+  BY_RATING: {
+    TYPE: `rating`,
+    SORT: (a, b) => b.rating - a.rating,
+  },
+  BY_COMMENTS: {
+    TYPE: `comments`,
+    SORT: (a, b) => b.commentsAmount - a.commentsAmount,
+  },
+};
+
+const typeFilters = {
+  ALL: {
+    TYPE: `all`,
+    FILTER: (n) => n,
+  },
+  WATCHLIST: {
+    TYPE: `inWatchlist`,
+    FILTER: (n) => n.inWatchlist,
+  },
+  WATCHED: {
+    TYPE: `inWatched`,
+    FILTER: (n) => n.inWatched,
+  },
+  FAVORITE: {
+    TYPE: `inFavorites`,
+    FILTER: (n) => n.inFavorites,
+  },
+};
+
 const createElement = (template) => {
   const newElement = document.createElement(`div`);
   newElement.innerHTML = template;
@@ -39,6 +77,8 @@ export {
   getRandomBoolean,
   getRandomItem,
   Position,
+  typeSorting,
+  typeFilters,
   createElement,
   render,
   unrender

@@ -1,9 +1,9 @@
 import {AbstractComponent} from './abstract-component';
 
 export default class Rating extends AbstractComponent {
-  constructor({titles, poster, ratingViewer}) {
+  constructor({title, poster, ratingViewer}) {
     super();
-    this._titles = titles;
+    this._title = title;
     this._poster = `./images/posters/` + poster;
     this._ratingViewer = ratingViewer;
   }
@@ -18,7 +18,7 @@ export default class Rating extends AbstractComponent {
         <img src="${this._poster}" alt="film-poster" class="film-details__user-rating-img">
       </div>
       <section class="film-details__user-rating-inner">
-        <h3 class="film-details__user-rating-title">${this._titles}</h3>
+        <h3 class="film-details__user-rating-title">${this._title}</h3>
         <p class="film-details__user-rating-feelings">How you feel it?</p>
         <div class="film-details__user-rating-score">
           <input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="1" id="rating-1" ${this._ratingViewer === 1 ? `checked` : ``}>

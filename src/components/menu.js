@@ -38,9 +38,9 @@ export class Menu extends AbstractComponent {
   getTemplate() {
     return `<nav class="main-navigation">
       <a href="#all" class="main-navigation__item main-navigation__item--active" data-screen="all">${this._title[0]}</a>
-      <a href="#watchlist" class="main-navigation__item">${this._title[1]}<span class="main-navigation__item-count">${this.setCount(`watchlist`)}</span></a>
-      <a href="#history" class="main-navigation__item">${this._title[2]}<span class="main-navigation__item-count">${this.setCount(`history`)}</span></a>
-      <a href="#favorites" class="main-navigation__item">${this._title[3]}<span class="main-navigation__item-count">${this.setCount(`favorites`)}</span></a>
+      <a href="#watchlist" class="main-navigation__item" data-screen="watchlist">${this._title[1]}<span class="main-navigation__item-count">${this.setCount(`watchlist`)}</span></a>
+      <a href="#history" class="main-navigation__item" data-screen="history">${this._title[2]}<span class="main-navigation__item-count">${this.setCount(`history`)}</span></a>
+      <a href="#favorites" class="main-navigation__item" data-screen="favorites">${this._title[3]}<span class="main-navigation__item-count">${this.setCount(`favorites`)}</span></a>
       <a href="#stats" class="main-navigation__item main-navigation__item--additional" data-screen="stats">${this._title[4]}</a>
     </nav>`;
   }

@@ -2,6 +2,7 @@ import {Position, render, unrender} from '../utils';
 import {FilmDetails} from '../components/film-details';
 import {Film} from '../components/film';
 import Rating from '../components/rating';
+import Comments from '../components/comments';
 
 export default class MovieController {
   constructor(container, data, onDataChange, onChangeView) {
@@ -35,7 +36,7 @@ export default class MovieController {
       inWatchlist: this._data.inWatchlist,
       inWatched: this._data.inWatched,
       inFavorites: this._data.inFavorites,
-      ratingViewer: this._data.ratingViewer
+      ratingViewer: this._data.ratingViewer,
     };
   }
 
@@ -43,6 +44,7 @@ export default class MovieController {
     let containerRating = null;
     let emoji = null;
     let emojiContainer = null;
+    let commentsList = null;
 
     // const film = new Film(this._data);
     // const filmDetails = new FilmDetails(this._data);
@@ -65,6 +67,7 @@ export default class MovieController {
       if (this._data.inWatched) {
         render(getContainer(), this._rating.getElement(), Position.BEFOREEND);
       }
+      this._data.comments.forEach((comment) => renderComment(comment));
       document.addEventListener(`keydown`, onEscKeyDown);
 
       this._filmDetails.getElement()
@@ -87,6 +90,43 @@ export default class MovieController {
         document.removeEventListener(`keydown`, onEscKeyDown);
         this._onDataChange(entry, this._data);
       }
+    };
+
+    const renderComment = (comments) => {
+      const comment = new Comments(comments);
+
+      comment.getElement()
+        .querySelector(`.film-details__comment-delete`)
+        .addEventListener(`click`, () => {
+          onCommentsChange(null, comment);
+          let countComments = this._filmDetails.getElement().querySelector(`.film-details__comments-count`).innerHTML;
+          this._filmDetails.getElement().querySelector(`.film-details__comments-count`).innerHTML = `${+countComments - 1}`;
+        });
+
+      commentsList = this._filmDetails.getElement().querySelector(`.film-details__comments-list`);
+      render(commentsList, comment.getElement(), Position.BEFOREEND);
+    };
+
+    const updateComments = () => {
+      commentsList = this._filmDetails.getElement().querySelector(`.film-details__comments-list`);
+      commentsList.innerHTML = ``;
+      this._data.comments.forEach((comment) => renderComment(comment));
+      entry.comments = this._data.comments;
+    };
+
+    const onCommentsChange = (newData, oldData) => {
+      const index = this._data.comments.findIndex((comments) => {
+        return oldData !== null && comments.comment === oldData._comment && comments.emoji === oldData._emoji
+          && comments.author === oldData._author && comments.date === oldData._date;
+      });
+
+      if (newData === null) {
+        this._data.comments = [...this._data.comments.slice(0, index), ...this._data.comments.slice(index + 1)];
+      } else {
+        this._data.comments.unshift(newData);
+      }
+
+      updateComments();
     };
 
     Array.from(filmPopUpSelectors).forEach((selector) => {

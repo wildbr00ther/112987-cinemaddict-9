@@ -1,24 +1,6 @@
 import {AbstractComponent} from './abstract-component';
 import moment from 'moment';
 
-const getCommenmarkup = ({author, date, comment, emoji}) => {
-  return `
-        <li class="film-details__comment">
-          <span class="film-details__comment-emoji">
-            <img src="./images/emoji/${emoji}" width="55" height="55" alt="emoji">
-          </span>
-          <div>
-            <p class="film-details__comment-text">${comment}</p>
-            <p class="film-details__comment-info">
-              <span class="film-details__comment-author">${author}</span>
-              <span class="film-details__comment-day">${moment(date).startOf(`day`).fromNow()}</span>
-              <button class="film-details__comment-delete">Delete</button>
-            </p>
-          </div>
-        </li>
-      `;
-};
-
 export class FilmDetails extends AbstractComponent {
   constructor({title, originalTitle, poster, director, screenwriters, actors, rating, releaseDate, country, duration, genre, description, ageLimit, inWatchlist, inWatched, inFavorites, comments}) {
     super();
@@ -130,9 +112,7 @@ export class FilmDetails extends AbstractComponent {
     <section class="film-details__comments-wrap">
       <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${this._comments.length}</span></h3>
 
-        <ul class="film-details__comments-list">
-                ${this._comments.map((comment) => getCommenmarkup(comment)).join(``)}
-        </ul>
+        <ul class="film-details__comments-list"></ul>
 
       <div class="film-details__new-comment">
         <div for="add-emoji" class="film-details__add-emoji-label"></div>

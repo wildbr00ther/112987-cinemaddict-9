@@ -1,8 +1,11 @@
-import {Position, render, unrender} from '../utils';
-import {FilmDetails} from '../components/film-details';
-import {Film} from '../components/film';
+import {Position, render, unrender, END_POINT, AUTHORIZATION} from '../utils';
+import FilmDetails from '../components/film-details';
+import Film from '../components/film';
 import Rating from '../components/rating';
 import Comments from '../components/comments';
+import API from '../api/api';
+import ModelComment from '../api/model-comment';
+import moment from 'moment';
 
 export default class MovieController {
   constructor(container, data, onDataChange, onChangeView) {
@@ -13,51 +16,28 @@ export default class MovieController {
     this._rating = new Rating(data);
     this._filmCard = new Film(data);
     this._filmDetails = new FilmDetails(data);
+    this._api = new API({endPoint: END_POINT, authorization: AUTHORIZATION});
     this.init();
   }
 
-  _entry() {
-    return {
-      title: this._data.title,
-      originalTitle: this._data.originalTitle,
-      poster: this._data.poster,
-      director: this._data.director,
-      screenwriters: this._data.screenwriters,
-      actors: this._data.actors,
-      rating: this._data.rating,
-      year: this._data.year,
-      releaseDate: this._data.releaseDate,
-      country: this._data.country,
-      duration: this._data.duration,
-      genre: this._data.genre,
-      description: this._data.description,
-      ageLimit: this._data.ageLimit,
-      comments: this._data.comments,
-      inWatchlist: this._data.inWatchlist,
-      inWatched: this._data.inWatched,
-      inFavorites: this._data.inFavorites,
-      ratingViewer: this._data.ratingViewer,
-    };
-  }
-
   init() {
-    let containerRating = null;
-    let emoji = null;
-    let emojiContainer = null;
-    let commentsList = null;
+    let ratingContainer = null;
+    // let emoji = null;
+    // let emojiContainer = null;
+    let commentContainer = null;
 
     // const film = new Film(this._data);
     // const filmDetails = new FilmDetails(this._data);
-    const entry = this._entry();
+    const entry = JSON.parse(JSON.stringify(this._data));
     const filmPopUpSelectors = this._filmCard.getElement().querySelectorAll(`.film-card__title, .film-card__poster, .film-card__comments`);
 
     const getContainer = () => {
       const formContainer = this._filmDetails.getElement().querySelector(`.film-details__inner`);
-      const containerTop = this._filmDetails.getElement().querySelector(`.form-details__bottom-container`);
-      containerRating = document.createElement(`div`);
-      containerRating.classList.add(`form-details__middle-container`);
-      formContainer.insertBefore(containerRating, containerTop);
-      return containerRating;
+      const topContainer = this._filmDetails.getElement().querySelector(`.form-details__bottom-container`);
+      ratingContainer = document.createElement(`div`);
+      ratingContainer.classList.add(`form-details__middle-container`);
+      formContainer.insertBefore(ratingContainer, topContainer);
+      return ratingContainer;
     };
 
     const showFilmDetails = () => {
@@ -67,7 +47,7 @@ export default class MovieController {
       if (this._data.inWatched) {
         render(getContainer(), this._rating.getElement(), Position.BEFOREEND);
       }
-      this._data.comments.forEach((comment) => renderComment(comment));
+      renderComment();
       document.addEventListener(`keydown`, onEscKeyDown);
 
       this._filmDetails.getElement()
@@ -92,41 +72,61 @@ export default class MovieController {
       }
     };
 
-    const renderComment = (comments) => {
-      const comment = new Comments(comments);
-
-      comment.getElement()
-        .querySelector(`.film-details__comment-delete`)
-        .addEventListener(`click`, () => {
-          onCommentsChange(null, comment);
-          let countComments = this._filmDetails.getElement().querySelector(`.film-details__comments-count`).innerHTML;
-          this._filmDetails.getElement().querySelector(`.film-details__comments-count`).innerHTML = `${+countComments - 1}`;
+    const onCommentsAdd = (evt, idFilm, newComm) => {
+      this._api.createComment({id: idFilm, data: ModelComment.toRAW(newComm)})
+        .then(() => {
+          evt.target.disabled = false;
+          evt.target.value = ``;
+          evt.target.blur();
+          this._onDataChange(entry, this._data);
+          updateComments();
+        })
+        .catch(() => {
+          evt.target.disabled = false;
         });
+    };
 
-      commentsList = this._filmDetails.getElement().querySelector(`.film-details__comments-list`);
-      render(commentsList, comment.getElement(), Position.BEFOREEND);
+    const onCommentsDelete = (evt, index, comments) => {
+      evt.target.disabled = true;
+      evt.target.textContent = `Deleting…`;
+      this._api.deleteComment({id: comments[index].id})
+        .then(() => {
+          evt.target.disabled = false;
+          evt.target.textContent = `Delete`;
+          this._onDataChange(entry, this._data);
+          updateComments();
+        })
+        .catch(() => {
+          evt.target.disabled = false;
+          evt.target.textContent = `Delete`;
+        });
+    };
+
+    const renderComment = () => {
+      this._api.getComments({id: this._data.id}).then((comments) => {
+        comments.forEach((commentCurr, index) => {
+          const comment = new Comments(commentCurr);
+          comment.getElement()
+            .querySelector(`.film-details__comment-delete`)
+            .addEventListener(`click`, (evt) => {
+              evt.preventDefault();
+              onCommentsDelete(evt, index, comments);
+
+              let quantityComments = this._filmDetails.getElement().querySelector(`.film-details__comments-count`).innerHTML;
+              this._filmDetails.getElement().querySelector(`.film-details__comments-count`).innerHTML = `${+quantityComments - 1}`;
+            });
+
+          commentContainer = this._filmDetails.getElement().querySelector(`.film-details__comments-list`);
+          render(commentContainer, comment.getElement(), Position.BEFOREEND);
+        });
+      });
     };
 
     const updateComments = () => {
-      commentsList = this._filmDetails.getElement().querySelector(`.film-details__comments-list`);
-      commentsList.innerHTML = ``;
-      this._data.comments.forEach((comment) => renderComment(comment));
+      commentContainer = this._filmDetails.getElement().querySelector(`.film-details__comments-list`);
+      commentContainer.innerHTML = ``;
+      renderComment();
       entry.comments = this._data.comments;
-    };
-
-    const onCommentsChange = (newData, oldData) => {
-      const index = this._data.comments.findIndex((comments) => {
-        return oldData !== null && comments.comment === oldData._comment && comments.emoji === oldData._emoji
-          && comments.author === oldData._author && comments.date === oldData._date;
-      });
-
-      if (newData === null) {
-        this._data.comments = [...this._data.comments.slice(0, index), ...this._data.comments.slice(index + 1)];
-      } else {
-        this._data.comments.unshift(newData);
-      }
-
-      updateComments();
     };
 
     Array.from(filmPopUpSelectors).forEach((selector) => {
@@ -192,7 +192,7 @@ export default class MovieController {
       .addEventListener(`click`, () => {
         entry.inWatched = !this._data.inWatched;
         if (document.querySelector(`.film-details__user-rating-wrap`)) {
-          unrender(containerRating);
+          unrender(ratingContainer);
           entry.ratingViewer = null;
         } else {
           render(getContainer(), this._rating.getElement(), Position.BEFOREEND);
@@ -207,15 +207,50 @@ export default class MovieController {
         entry.ratingViewer = Number(radio.length && radio.find((r) => r.checked).value);
       });
 
+    this._filmDetails.getElement().querySelectorAll(`.film-details__emoji-label`).forEach((element) => {
+      element.addEventListener(`click`, () => {
+        const imageElement = element.querySelector(`img`);
+        const emojiContainer = document.createElement(`div`);
+        emojiContainer.innerHTML = `<img src="${imageElement.src}" width="55" height="55" alt="emoji">`;
+        this._filmDetails.getElement().querySelector(`.film-details__add-emoji-label`).innerHTML = ``;
+        this._filmDetails.getElement().querySelector(`.film-details__add-emoji-label`)
+          .appendChild(emojiContainer.firstChild);
+      });
+    });
+
     this._filmDetails.getElement()
-      .querySelector(`.film-details__emoji-list`)
-      .addEventListener(`click`, (event) => {
-        emoji = event.target.closest(`img`).cloneNode();
-        emoji.width = 60;
-        emoji.height = 60;
-        emojiContainer = this._filmDetails.getElement().querySelector(`.film-details__add-emoji-label`);
-        emojiContainer.innerHTML = ``;
-        emojiContainer.append(emoji);
+      .querySelector(`.film-details__comment-input`)
+      .addEventListener(`keydown`, (evt) => {
+
+        const commentFieldElement = this._filmDetails.getElement().querySelector(`.film-details__comment-input`);
+        const checkedInputElement = this._filmDetails.getElement().querySelector(`.film-details__emoji-item:checked`);
+        const chosenEmoji = this._filmDetails.getElement().querySelector(`.film-details__add-emoji-label img`);
+
+        if ((evt.key === `Enter` && evt.metaKey) || (evt.key === `Enter` && evt.ctrlKey)) {
+          if (!commentFieldElement.value || !checkedInputElement) {
+            return;
+          }
+          const createComment = (emoji) => {
+            const textaria = this._filmDetails.getElement().querySelector(`.film-details__comment-input`);
+            const newComment = {
+              text: textaria.value,
+              author: ``,
+              date: moment(),
+              emoji: {
+                id: emoji.src.slice(emoji.src.lastIndexOf(`/`) + 1, emoji.src.lastIndexOf(`.png`)),
+              },
+            };
+
+            onCommentsAdd(evt, this._data.id, newComment);
+
+            this._filmDetails.getElement().querySelector(`.film-details__add-emoji-label`).innerHTML = ``;
+            textaria.value = ``;
+            textaria.placeholder = `Select reaction below and write comment here`;
+          };
+          let quantityComments = this._filmDetails.getElement().querySelector(`.film-details__comments-count`).innerHTML;
+          this._filmDetails.getElement().querySelector(`.film-details__comments-count`).innerHTML = `${+quantityComments + 1}`;
+          createComment(chosenEmoji);
+        }
       });
 
     render(this._container, this._filmCard.getElement(), Position.BEFOREEND);

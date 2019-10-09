@@ -1,6 +1,7 @@
-import {AbstractComponent} from './abstract-component';
+import AbstractComponent from './abstract-component';
+import moment from 'moment';
 
-export class Film extends AbstractComponent {
+export default class Film extends AbstractComponent {
   constructor({title, poster, rating, year, duration, genre, description, comments, inWatchlist, inWatched, inFavorites}) {
     super();
     this._title = title;
@@ -22,10 +23,11 @@ export class Film extends AbstractComponent {
       <p class="film-card__rating">${this._rating}</p>
       <p class="film-card__info">
         <span class="film-card__year">${this._year}</span>
-        <span class="film-card__duration">${this._duration}</span>
+         <span class="film-card__duration">${moment.utc(moment.duration(this._duration, `minutes`).asMilliseconds()).format(`H`) + ` h ` +
+    moment.utc(moment.duration(this._duration, `minutes`).asMilliseconds()).format(`m`) + ` m`}</span>
         <span class="film-card__genre">${this._genre[Math.floor(Math.random() * this._genre.length)]}</span>
       </p>
-      <img src="./images/posters/${this._poster}" alt="" class="film-card__poster">
+      <img src="${this._poster}" alt="" class="film-card__poster">
       <p class="film-card__description">${this._description}</p>
       <a class="film-card__comments">${this._comments.length} comments</a>
       <form class="film-card__controls">

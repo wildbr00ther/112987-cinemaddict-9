@@ -4,7 +4,6 @@ import {FilmsList} from '../components/films-list.js';
 import {TopRated} from '../components/films-top-rated.js';
 import {MostCommented} from '../components/films-most-commented.js';
 import MovieController from './movie';
-import {ButtonLoad} from '../components/show-more-btn.js';
 import {Statistic} from '../components/statistic.js';
 import {NoFilms} from '../components/no-films';
 import {mockArray} from '../data.js';
@@ -14,12 +13,11 @@ import {Menu} from '../components/menu';
 import FilmCardsController from './film-cards';
 
 export default class PageController {
-  constructor(mainContainer, headerContainer, searchController, statistics, films) {
+  constructor(mainContainer, headerContainer, searchController, statisticsController, films) {
     this._mainContainer = mainContainer;
-    this._headerContainer = headerContainer;
     this._searchController = searchController;
-    this._statistics = statistics;
     this._films = films;
+    this._selectedCards = this._films;
     this._showedFilms = FILM_COUNT;
     this._menu = new Menu();
     this._board = new Board();
@@ -28,12 +26,12 @@ export default class PageController {
     this._noFilms = new NoFilms();
     this._topRated = new TopRated();
     this._mostCommented = new MostCommented();
-    this._buttonLoad = new ButtonLoad();
     this._statistic = new Statistic(films.length);
     this._subscriptions = [];
     this._onChangeView = this._onChangeView.bind(this);
     this._onDataChange = this._onDataChange.bind(this);
     this._filmCardsController = new FilmCardsController(null, null, this._onDataChange.bind(this));
+    this._statisticsController = statisticsController;
   }
 
   init() {
@@ -78,29 +76,6 @@ export default class PageController {
 
     this._filmCardsController = new FilmCardsController(this._mainContainer, filmsListContainerElement, this._onDataChange.bind(this));
     this._filmCardsController.setFilmCards(this._films);
-
-    // const buttonLoadHandler = () => {
-    //   this._films.slice(this._showedFilms, this._showedFilms + FILM_COUNT)
-    //     .forEach((film) => this._renderFilm(filmsListContainerElement, film));
-    //
-    //   this._showedFilms += FILM_COUNT;
-    //
-    //   if (this._showedFilms >= this._films.length) {
-    //     unrender(this._buttonLoad.getElement());
-    //     this._buttonLoad.removeElement();
-    //   }
-    // };
-
-    // unrender(this._buttonLoad.getElement());
-    // this._buttonLoad.removeElement();
-    //
-    // if (this._showedFilms < this._films.length) {
-    //   render(this._board.getElement(), this._buttonLoad.getElement(), Position.BEFOREEND);
-    // }
-    // this._films.slice(0, this._showedFilms).forEach((film) => this._renderFilm(filmsListContainerElement, film));
-
-    // this._buttonLoad.getElement()
-    //   .addEventListener(`click`, () => buttonLoadHandler());
 
     unrender(this._topRated.getElement());
     unrender(this._mostCommented.getElement());
@@ -159,30 +134,30 @@ export default class PageController {
           this.show();
           this._selectedFilter = typeFilters.ALL;
           this._searchController.hide();
-          unrender(this._statistic.getElement());
+          this._statisticsController.hide();
           break;
         case `stats`:
           this.hide();
           this._searchController.hide();
-          render(this._mainContainer, this._statistics.getElement(), Position.BEFOREEND);
+          this._statisticsController.show(this._films);
           break;
         case `watchlist`:
           this.show();
           this._selectedFilter = typeFilters.WATCHLIST;
           this._searchController.hide();
-          unrender(this._statistic.getElement());
+          this._statisticsController.hide();
           break;
         case `history`:
           this.show();
           this._selectedFilter = typeFilters.WATCHED;
           this._searchController.hide();
-          unrender(this._statistic.getElement());
+          this._statisticsController.hide();
           break;
         case `favorites`:
           this.show();
           this._selectedFilter = typeFilters.FAVORITE;
           this._searchController.hide();
-          unrender(this._statistic.getElement());
+          this._statisticsController.hide();
           break;
       }
 

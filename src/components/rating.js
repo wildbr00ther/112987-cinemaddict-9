@@ -1,10 +1,10 @@
-import {AbstractComponent} from './abstract-component';
+import AbstractComponent from './abstract-component';
 
 export default class Rating extends AbstractComponent {
   constructor({title, poster, ratingViewer}) {
     super();
     this._title = title;
-    this._poster = `./images/posters/` + poster;
+    this._poster = poster;
     this._ratingViewer = ratingViewer;
   }
 

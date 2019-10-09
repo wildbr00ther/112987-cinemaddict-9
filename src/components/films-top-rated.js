@@ -1,4 +1,4 @@
-import {AbstractComponent} from './abstract-component';
+import AbstractComponent from './abstract-component';
 
 export class TopRated extends AbstractComponent {
   getTemplate() {

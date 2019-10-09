@@ -1,5 +1,5 @@
 import {mockArray} from './../data.js';
-import {AbstractComponent} from './abstract-component';
+import AbstractComponent from './abstract-component';
 
 const films = mockArray;
 

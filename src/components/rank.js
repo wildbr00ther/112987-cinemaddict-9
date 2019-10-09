@@ -1,7 +1,7 @@
 import {mockArray} from '../data.js';
-import {AbstractComponent} from './abstract-component';
+import AbstractComponent from './abstract-component';
 
-export class Rank extends AbstractComponent {
+export default class Rank extends AbstractComponent {
   constructor() {
     super();
     this._watchedCount = this.calcWatched();

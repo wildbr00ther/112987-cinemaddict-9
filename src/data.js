@@ -117,12 +117,35 @@ const comments = [
   `Fantastic`,
 ];
 
-const emojis = [
-  `angry.png`,
-  `puke.png`,
-  `sleeping.png`,
-  `smile.png`,
-  `trophy.png`
+// const emojis = [
+//   `angry.png`,
+//   `puke.png`,
+//   `sleeping.png`,
+//   `smile.png`,
+//   `trophy.png`
+// ];
+
+export const emojis = [
+  {
+    id: `smile`,
+    value: `sleeping`,
+    source: `./images/emoji/smile.png`,
+  },
+  {
+    id: `sleeping`,
+    value: `neutral-face`,
+    source: `./images/emoji/sleeping.png`,
+  },
+  {
+    id: `puke`,
+    value: `grinning`,
+    source: `./images/emoji/puke.png`,
+  },
+  {
+    id: `angry`,
+    value: `grinning`,
+    source: `./images/emoji/angry.png`
+  }
 ];
 
 const users = [
@@ -155,7 +178,7 @@ export const getFilmCard = () => ({
   year: (2019 - Math.floor(Math.random() * 50)),
   releaseDate: moment([(2019 - Math.floor(Math.random() * 50)), (12 - Math.floor(Math.random() * 11)), (30 - Math.floor(Math.random() * 28))]),
   country: getRandomItem(countries),
-  duration: Math.floor(Math.random() * 2) + ` h ` + Math.floor(Math.random() * 60) + ` m`,
+  duration: Math.floor(Math.random() * 180),
   genre: genres,
   description: descriptionText,
   ageLimit: getRandomItem(ageLimit),

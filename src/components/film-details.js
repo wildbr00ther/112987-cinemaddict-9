@@ -1,7 +1,7 @@
-import {AbstractComponent} from './abstract-component';
+import AbstractComponent from './abstract-component';
 import moment from 'moment';
 
-export class FilmDetails extends AbstractComponent {
+export default class FilmDetails extends AbstractComponent {
   constructor({title, originalTitle, poster, director, screenwriters, actors, rating, releaseDate, country, duration, genre, description, ageLimit, inWatchlist, inWatched, inFavorites, comments}) {
     super();
     this._title = title;
@@ -32,7 +32,7 @@ export class FilmDetails extends AbstractComponent {
     </div>
     <div class="film-details__info-wrap">
       <div class="film-details__poster">
-        <img class="film-details__poster-img" src="./images/posters/${this._poster}" alt="">
+        <img class="film-details__poster-img" src="${this._poster}" alt="">
 
         <p class="film-details__age">${this._ageLimit}+</p>
       </div>
@@ -57,16 +57,16 @@ export class FilmDetails extends AbstractComponent {
           <tr class="film-details__row">
             <td class="film-details__term">Writers</td>
             <td class="film-details__cell">${Array.from(this._screenwriters)
-    .sort(() => Math.random() - 0.5)
-    .slice(0, 2)
-    .map((screenwriter) => `${screenwriter} `).join(``)}</td>
+      .sort(() => Math.random() - 0.5)
+      .slice(0, 2)
+      .map((screenwriter) => `${screenwriter} `).join(``)}</td>
           </tr>
           <tr class="film-details__row">
             <td class="film-details__term">Actors</td>
             <td class="film-details__cell">${Array.from(this._actors)
-    .sort(() => Math.random() - 0.5)
-    .slice(0, 2)
-    .map((actor) => `${actor} `).join(``)}</td>
+      .sort(() => Math.random() - 0.5)
+      .slice(0, 2)
+      .map((actor) => `${actor} `).join(``)}</td>
           </tr>
           <tr class="film-details__row">
             <td class="film-details__term">Release Date</td>
@@ -74,7 +74,8 @@ export class FilmDetails extends AbstractComponent {
           </tr>
           <tr class="film-details__row">
             <td class="film-details__term">Runtime</td>
-            <td class="film-details__cell">${this._duration}</td>
+            <td class="film-details__cell">${moment.utc(moment.duration(this._duration, `minutes`).asMilliseconds()).format(`H`) + ` h ` +
+    moment.utc(moment.duration(this._duration, `minutes`).asMilliseconds()).format(`m`) + ` m`}</td>
           </tr>
           <tr class="film-details__row">
             <td class="film-details__term">Country</td>
@@ -84,9 +85,9 @@ export class FilmDetails extends AbstractComponent {
             <td class="film-details__term">Genres</td>
             <td class="film-details__cell">
               ${Array.from(this._genre)
-    .sort(() => Math.random() - 0.5)
-    .slice(0, 3)
-    .map((genre) => `<span class="film-details__genre">${genre}</span>`).join(``)}
+      .sort(() => Math.random() - 0.5)
+      .slice(0, 3)
+      .map((genre) => `<span class="film-details__genre">${genre}</span>`).join(``)}
           </tr>
         </tbody></table>
 

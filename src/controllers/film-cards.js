@@ -1,7 +1,7 @@
 import MovieController from './movie';
 import {ButtonLoad} from '../components/show-more-btn.js';
 import {FilmsList} from "../components/films-list";
-import {FILM_COUNT, FILM_EXTRA_COUNT} from '../main';
+import {FILM_COUNT} from '../main';
 import {Position, render, unrender} from '../utils';
 
 export default class FilmCardsController {

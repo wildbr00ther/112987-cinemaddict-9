@@ -1,6 +1,4 @@
-// import {shortDescription} from "../components/utils";
 import moment from "moment";
-import {getRandomBoolean} from '../utils';
 
 export default class ModelFilm {
   constructor(data) {

@@ -14,7 +14,7 @@ export default class SearchController {
     this._searchResult = new SearchResult();
     this._noResult = new SearchNoResult();
     this._filmsList = new FilmsList();
-    this._filmCardsController = new FilmCardsController(null, null,  this._onDataChange.bind(this));
+    this._filmCardsController = new FilmCardsController(null, null, this._onDataChange.bind(this));
   }
 
   init() {
